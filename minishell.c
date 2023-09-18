@@ -3,65 +3,236 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: armgevor <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: armgevor <armgevor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/05 13:18:00 by armgevor          #+#    #+#             */
-/*   Updated: 2023/07/05 13:18:02 by armgevor         ###   ########.fr       */
+/*   Updated: 2023/09/15 18:28:52 by armgevor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void ctrl_c_handleing(int signal)
+toc	*create_tocken5(char **str)
 {
-	(void)signal;
-	// if (signal == SIGINT)
-	// rl_on_new_line();
-	printf("bareeeeev");
-	rl_on_new_line();
-	rl_redisplay();
-	exit (0);
+	toc *node;
+	
+	node = malloc(sizeof(toc));
+	if (!node)
+		return (0)
+	node->s = malloc(2 * sizeof(char));
+	if (!node->s)
+		return (0);
+	node->s = " ";
+	node->in = 0;
+	node->out = 1;
+	node->prev = NULL;
+	node->next = NULL;
+	*str++;
 }
 
-void ctrl_d_handleing(int sig)
+toc	*create_tocken6(char **str)
 {
-	(void)sig;
-	exit (0);
+	toc *node;
+	
+	node = malloc(sizeof(toc));
+	if (!node)
+		return (0)
+	node->s = malloc(2 * sizeof(char));
+	if (!node->s)
+		return (0);
+	node->s = "|";
+	node->in = 0;
+	node->out = 1;
+	node->prev = NULL;
+	node->next = NULL;
+	*str++;
+}
+
+toc	*create_tocken7(char **str)
+{
+	toc *node;
+	
+	node = malloc(sizeof(toc));
+	if (!node)
+		return (0)
+	node->s = malloc(2 * sizeof(char));
+	if (!node->s)
+		return (0);
+	node->s = "\"";
+	node->in = 0;
+	node->out = 1;
+	node->prev = NULL;
+	node->next = NULL;
+	*str++;
+}
+
+toc	*create_tocken8(char **str)
+{
+	toc *node;
+	
+	node = malloc(sizeof(toc));
+	if (!node)
+		return (0)
+	node->s = malloc(2 * sizeof(char));
+	if (!node->s)
+		return (0);
+	node->s = "\'";
+	node->in = 0;
+	node->out = 1;
+	node->prev = NULL;
+	node->next = NULL;
+	*str++;
+}
+
+
+toc	*create_tocken9(char **str)
+{
+	toc *node;
+	
+	node = malloc(sizeof(toc));
+	if (*(str + 1) == '>')
+	{
+		node->id = 11;
+		str++;
+		node->s = malloc(3 * sizeof(char));
+		node->s = ">>";
+	}
+	else
+	{
+		node->s = malloc(2 * sizeof(char));
+		node->s = ">";
+	}
+	node->in = 0;
+	node->out = 1;
+	node->prev = NULL;
+	node->next = NULL;
+	*str++;
+}
+
+toc	*create_tocken10(char **str)
+{
+	toc *node;
+	
+	node = malloc(sizeof(toc));
+	if (*(str + 1) == '<')
+	{
+		node->id = 11;
+		str++;
+		node->s = malloc(3 * sizeof(char));
+		node->s = "<<";
+	}
+	else
+	{
+		node->s = malloc(2 * sizeof(char));
+		node->s = "<";
+	}
+	node->in = 0;
+	node->out = 1;
+	node->prev = NULL;
+	node->next = NULL;
+	*str++;
+}
+
+toc	*create_tocken13(char **str)
+{
+	toc *node;
+	char *skizb;
+	int i;
+
+	node = malloc(sizeof(toc));
+	if (!node)
+		return (0)
+	skizb = *str;
+	i = 1;
+	while (str && *str && ((*str >= 65 && *str <= 90)
+		|| (*str >= 97 && *str <= 122) || (*str >= 48 && *str <= 57)))
+	{
+		*str++;
+		i++;
+	}
+	node->s = malloc(i * sizeof(char));
+	if (!node->s)
+		return (0);
+	while (--i)
+		node->s[i] = skizb[i];
+	node->s = "|";
+	node->in = 0;
+	node->out = 1;
+	node->prev = NULL;
+	node->next = NULL;
+}
+
+toc	*create_tocken1(char **str)
+{
+	if (*str == '|')
+		return create_tocken6(str);
+	else if (*str == '>')
+		return create_tocken9(str); //done
+	else if (*str == '<')
+		return create_tocken10(str);
+	else if (*str == '\'')
+		return create_tocken7(str);
+	else if (*str == '\"')
+		return create_tocken8(str);
+	else if (*str == ' ')
+		return create_tocken5(str);
+	else if ((*str >= 'a' && *str <= 'z') || (*str >= 'A' && *str <= 'Z') || (*str >= '0' && *str <= '9'))
+		return create_tocken13(str);
+	else
+		exit(1);
+}
+
+void	tocken(char **str, toc **tockens)
+{
+	int	i;
+	toc *tmp;
+
+	i = 0;
+	tmp = NULL;
+	while (str)
+	{
+		(*tockens)->prev = tmp;
+		tmp = create_tocken(str);
+		*tockens = tmp;
+		// (*tockens)->next = tmp->next;
+	}
+}
+
+void	error(char *s, int i)
+{
+	printf("%s\n", s);
+	exit(i);
 }
 
 int main(int c, char **v, char **envp)
 {
-	(void)c, (void)v;
-	char *str;
+	(void)c, (void)v, (void)envp;
+	
+	char *str, *srgn;
+	toc *tockens;
+	// char **split;
+	// com	msh;
 
-	// int i = 5;
-	(void)envp;
-	// clear_history();
+	if (c != 1)
+		error("Error: invalid argument.", 1);
 	signal(SIGINT, ctrl_c_handleing);
 	while(1)
 	{
-		// signal(EOF, ctrl_d_handleing);
-		str = readline("minishell armgevor$ ");
-		if (!str)
+		srgn = readline("hellot hell$ ");
+		if (!srgn)
 		{
-			printf("\nexit\n");
+			printf("exit\n");
 			exit(0);
 		}
-		
-		// printf("%s\n", str);
-		ft_pwd(str);
-		
-
-		if(!ft_strncmp(str, "echo", 4))
-			ft_echo(c, str + 5);
-		add_history(str);
-		
-		rl_on_new_line();
-		rl_redisplay();
-		free(str);
+		str = srgn;
+		tocken(str);
+		add_history(srgn);
+		free(srgn);
 	}
-	// for (int i = 0; envp[i]; i++)
-	// 	printf("%s\n\n\n", envp[i]);
+	
 	
 	return 0;
 }
+
+
+// printf("i am grut\n");

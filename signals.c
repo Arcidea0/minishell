@@ -1,37 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: armgevor <armgevor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/09 15:46:38 by armgevor          #+#    #+#             */
-/*   Updated: 2023/09/11 22:55:00 by armgevor         ###   ########.fr       */
+/*   Created: 2023/07/05 13:18:00 by armgevor          #+#    #+#             */
+/*   Updated: 2023/09/15 16:53:23 by armgevor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_echo(int c, char *str);
-// {
-// 	int	i;
-// 	int	q;
-
-// c = 0;
-// 	i = 1;
-// 	q = 0;
-// 	if (!ft_strncmp(str, "-n", 2))
-// 	{
-// 		q = 1;
-// 		i++;
-// 	}
-// 	// while (str)
-// 	// {
-// 		if (q)
-// 		{
-// 			printf("%s\n", str + 3);
-// 			printf("\n");
-// 		}
-// 		else
-// 			printf("%s\n", str);
-// }
+void ctrl_c_handleing(int signal)
+{
+	(void)signal;
+	// rl_replace_line("minishell armgevor$ ", 0);
+	rl_on_new_line();
+	rl_redisplay();
+	exit (0);
+}
